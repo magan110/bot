@@ -65,6 +65,7 @@ internal static class Program
         services.AddSingleton<IConversationService, ConversationService>();
         services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
         services.AddSingleton<ISqlValidator, SqlValidationPipeline>();
+        services.AddSingleton<DatabaseConnectionManager>();
 
         // Register HTTP client for LLM providers
         services.AddHttpClient();

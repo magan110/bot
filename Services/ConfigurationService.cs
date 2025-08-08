@@ -80,35 +80,54 @@ public class ConfigurationService : IConfigurationService
 
     public async Task SaveAsync()
     {
-        var json = JsonConvert.SerializeObject(_settings, Formatting.Indented);
+        // Convert flat dictionary back to nested structure
+        var nested = new Dictionary<string, object>();
+        
+        foreach (var kvp in _settings)
+        {
+            SetNestedValue(nested, kvp.Key, kvp.Value);
+        }
+        
+        var json = JsonConvert.SerializeObject(nested, Formatting.Indented);
         await File.WriteAllTextAsync(_configPath, json);
+    }
+
+    private void SetNestedValue(Dictionary<string, object> dict, string key, object value)
+    {
+        var parts = key.Split(':');
+        var current = dict;
+        
+        for (int i = 0; i < parts.Length - 1; i++)
+        {
+            if (!current.ContainsKey(parts[i]))
+            {
+                current[parts[i]] = new Dictionary<string, object>();
+            }
+            current = (Dictionary<string, object>)current[parts[i]];
+        }
+        
+        current[parts[^1]] = value;
     }
 
     private void LoadSettings()
     {
         _settings = new Dictionary<string, object>();
         
-        if (File.Exists(_configPath))
+        // Load from appsettings.json using IConfiguration
+        LoadFromConfiguration(_configuration, "", _settings);
+        
+        // If no settings loaded, create defaults
+        if (!_settings.Any())
         {
-            var json = File.ReadAllText(_configPath);
-            var loaded = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
-            if (loaded != null)
-            {
-                _settings = loaded;
-            }
-        }
-        else
-        {
-            // Create default configuration
             _settings = new Dictionary<string, object>
             {
-                ["ConnectionStrings:Default"] = "Server=localhost;Database=SampleDB;Integrated Security=true;TrustServerCertificate=true;",
+                ["ConnectionStrings:Default"] = "Server=(localdb)\\MSSQLLocalDB;Database=DbAutoChat;Integrated Security=true;TrustServerCertificate=true;",
                 ["Bot:MaxRows"] = 1000,
-                ["Bot:Provider"] = "OpenAI",
+                ["Bot:Provider"] = "Gemini",
                 ["Bot:OpenAI:ApiKey"] = "",
                 ["Bot:OpenAI:Model"] = "gpt-4",
                 ["Bot:OpenAI:BaseUrl"] = "https://api.openai.com/v1",
-                ["Bot:Gemini:ApiKey"] = "",
+                ["Bot:Gemini:ApiKey"] = "AIzaSyDYIfu2K0VpG3M42WIjJrY48mgh7L0Ir7s",
                 ["Bot:Gemini:Model"] = "gemini-pro",
                 ["Bot:Ollama:BaseUrl"] = "http://localhost:11434",
                 ["Bot:Ollama:Model"] = "llama2",
@@ -117,6 +136,25 @@ public class ConfigurationService : IConfigurationService
                 ["Logging:File:Path"] = "logs/dbautochat-.log",
                 ["Logging:File:RollingInterval"] = "Day"
             };
+        }
+    }
+
+    private void LoadFromConfiguration(IConfiguration config, string prefix, Dictionary<string, object> settings)
+    {
+        foreach (var child in config.GetChildren())
+        {
+            var key = string.IsNullOrEmpty(prefix) ? child.Key : $"{prefix}:{child.Key}";
+            
+            if (child.GetChildren().Any())
+            {
+                // Has children, recurse
+                LoadFromConfiguration(child, key, settings);
+            }
+            else
+            {
+                // Leaf value
+                settings[key] = child.Value ?? "";
+            }
         }
     }
 

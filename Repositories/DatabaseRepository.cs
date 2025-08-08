@@ -53,11 +53,11 @@ public class DatabaseRepository : IDatabaseRepository
                 WHERE t.TABLE_TYPE = 'BASE TABLE'
                 ORDER BY t.TABLE_SCHEMA, t.TABLE_NAME, c.ORDINAL_POSITION";
 
-            var tableData = await connection.QueryAsync(tablesQuery);
+            var tableData = await connection.QueryAsync<dynamic>(tablesQuery);
             
             var tableGroups = tableData.GroupBy(row => new { 
-                Schema = (string)row.TABLE_SCHEMA, 
-                Name = (string)row.TABLE_NAME 
+                Schema = (string)((IDictionary<string, object>)row)["TABLE_SCHEMA"], 
+                Name = (string)((IDictionary<string, object>)row)["TABLE_NAME"] 
             });
 
             foreach (var tableGroup in tableGroups)
@@ -70,12 +70,13 @@ public class DatabaseRepository : IDatabaseRepository
 
                 foreach (var column in tableGroup)
                 {
+                    var columnDict = (IDictionary<string, object>)column;
                     table.Columns.Add(new ColumnInfo
                     {
-                        Name = (string)column.COLUMN_NAME,
-                        DataType = (string)column.DATA_TYPE,
-                        IsNullable = (string)column.IS_NULLABLE == "YES",
-                        IsIdentity = (int)column.IS_IDENTITY == 1
+                        Name = (string)columnDict["COLUMN_NAME"],
+                        DataType = (string)columnDict["DATA_TYPE"],
+                        IsNullable = (string)columnDict["IS_NULLABLE"] == "YES",
+                        IsIdentity = (int)columnDict["IS_IDENTITY"] == 1
                     });
                 }
 
@@ -94,13 +95,14 @@ public class DatabaseRepository : IDatabaseRepository
                 WHERE tc.CONSTRAINT_TYPE = 'PRIMARY KEY'
                 ORDER BY tc.TABLE_SCHEMA, tc.TABLE_NAME, kcu.ORDINAL_POSITION";
 
-            var primaryKeys = await connection.QueryAsync(primaryKeysQuery);
+            var primaryKeys = await connection.QueryAsync<dynamic>(primaryKeysQuery);
             
             foreach (var pk in primaryKeys)
             {
+                var pkDict = (IDictionary<string, object>)pk;
                 var table = schema.Tables.FirstOrDefault(t => 
-                    t.Schema == (string)pk.TABLE_SCHEMA && t.Name == (string)pk.TABLE_NAME);
-                table?.PrimaryKeys.Add((string)pk.COLUMN_NAME);
+                    t.Schema == (string)pkDict["TABLE_SCHEMA"] && t.Name == (string)pkDict["TABLE_NAME"]);
+                table?.PrimaryKeys.Add((string)pkDict["COLUMN_NAME"]);
             }
 
             // Get foreign key relationships
@@ -118,16 +120,17 @@ public class DatabaseRepository : IDatabaseRepository
                 INNER JOIN sys.tables tr ON fkc.referenced_object_id = tr.object_id
                 INNER JOIN sys.columns cr ON fkc.referenced_object_id = cr.object_id AND fkc.referenced_column_id = cr.column_id";
 
-            var relationships = await connection.QueryAsync(relationshipsQuery);
+            var relationships = await connection.QueryAsync<dynamic>(relationshipsQuery);
             
             foreach (var rel in relationships)
             {
+                var relDict = (IDictionary<string, object>)rel;
                 schema.Relationships.Add(new RelationshipInfo
                 {
-                    FromTable = (string)rel.parent_table,
-                    FromColumn = (string)rel.parent_column,
-                    ToTable = (string)rel.referenced_table,
-                    ToColumn = (string)rel.referenced_column
+                    FromTable = (string)relDict["parent_table"],
+                    FromColumn = (string)relDict["parent_column"],
+                    ToTable = (string)relDict["referenced_table"],
+                    ToColumn = (string)relDict["referenced_column"]
                 });
             }
 

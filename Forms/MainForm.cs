@@ -13,6 +13,7 @@ public partial class MainForm : Form
     private readonly IDatabaseRepository _databaseRepository;
     private readonly ISqlValidator _sqlValidator;
     private readonly QueryOrchestrator _queryOrchestrator;
+    private readonly DatabaseConnectionManager _connectionManager;
     private readonly ILogger<MainForm> _logger;
     private bool _isProcessingQuery = false;
 
@@ -22,6 +23,7 @@ public partial class MainForm : Form
         IDatabaseRepository databaseRepository,
         ISqlValidator sqlValidator,
         QueryOrchestrator queryOrchestrator,
+        DatabaseConnectionManager connectionManager,
         ILogger<MainForm> logger)
     {
         _configService = configService;
@@ -29,6 +31,7 @@ public partial class MainForm : Form
         _databaseRepository = databaseRepository;
         _sqlValidator = sqlValidator;
         _queryOrchestrator = queryOrchestrator;
+        _connectionManager = connectionManager;
         _logger = logger;
 
         InitializeComponent();

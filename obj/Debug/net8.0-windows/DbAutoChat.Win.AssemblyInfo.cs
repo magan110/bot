@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DbAutoChat.Win")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+08b796e56eed8c2029ea2a41c2a0d0821da33554")]
 [assembly: System.Reflection.AssemblyProductAttribute("DbAutoChat.Win")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DbAutoChat.Win")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

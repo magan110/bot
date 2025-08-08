@@ -83,3 +83,4 @@ C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\bin\Debug\net8.0-windows\Micr
 C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\bin\Debug\net8.0-windows\Microsoft.Extensions.Options.ConfigurationExtensions.dll
 C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\bin\Debug\net8.0-windows\Castle.Core.dll
 C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\bin\Debug\net8.0-windows\Moq.dll
+C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\obj\Debug\net8.0-windows\DbAutoChat.Win.sourcelink.json

@@ -18,6 +18,9 @@ public partial class SettingsForm : Form
     {
         try
         {
+            // Load available databases
+            LoadDatabaseOptions();
+            
             // Load database connection
             connectionStringTextBox.Text = _configService.GetSetting<string>("ConnectionStrings:Default") ?? "";
 
@@ -39,6 +42,36 @@ public partial class SettingsForm : Form
         {
             MessageBox.Show($"Error loading settings: {ex.Message}", "Settings Error", 
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+    }
+
+    private void LoadDatabaseOptions()
+    {
+        // Add database selector if it exists in the designer
+        if (Controls.Find("databaseComboBox", true).FirstOrDefault() is ComboBox dbComboBox)
+        {
+            dbComboBox.Items.Clear();
+            dbComboBox.Items.AddRange(new[] { "Default (Local)", "bwlive", "itkHaria", "imageData" });
+            dbComboBox.SelectedIndex = 0;
+            dbComboBox.SelectedIndexChanged += DatabaseComboBox_SelectedIndexChanged;
+        }
+    }
+
+    private void DatabaseComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (sender is ComboBox dbComboBox)
+        {
+            var selectedDb = dbComboBox.SelectedItem?.ToString();
+            var connectionKey = selectedDb switch
+            {
+                "Default (Local)" => "ConnectionStrings:Default",
+                "bwlive" => "ConnectionStrings:bwlive", 
+                "itkHaria" => "ConnectionStrings:itkHaria",
+                "imageData" => "ConnectionStrings:imageData",
+                _ => "ConnectionStrings:Default"
+            };
+            
+            connectionStringTextBox.Text = _configService.GetSetting<string>(connectionKey) ?? "";
         }
     }
 
@@ -93,6 +126,9 @@ public partial class SettingsForm : Form
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
+
+            // Save the current connection string as Default
+            _configService.SetSetting("ConnectionStrings:Default", connectionStringTextBox.Text);
 
             var selectedProvider = providerComboBox.SelectedItem?.ToString();
             if (string.IsNullOrEmpty(selectedProvider))
