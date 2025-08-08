@@ -20,7 +20,7 @@ public class DatabaseConnectionManager
         {
             var connectionKey = $"ConnectionStrings:{databaseName}";
             var connectionString = _configService.GetSetting<string>(connectionKey);
-            
+
             if (string.IsNullOrEmpty(connectionString))
             {
                 _logger.LogWarning("Connection string not found for database: {DatabaseName}", databaseName);
@@ -30,7 +30,7 @@ public class DatabaseConnectionManager
             // Update the Default connection string to point to the selected database
             _configService.SetSetting("ConnectionStrings:Default", connectionString);
             await _configService.SaveAsync();
-            
+
             _logger.LogInformation("Switched to database: {DatabaseName}", databaseName);
             return true;
         }
@@ -44,10 +44,10 @@ public class DatabaseConnectionManager
     public List<string> GetAvailableDatabases()
     {
         var databases = new List<string>();
-        
+
         // Check for each configured connection string
         var connectionStrings = new[] { "bwlive", "itkHaria", "imageData" };
-        
+
         foreach (var dbName in connectionStrings)
         {
             var connectionString = _configService.GetSetting<string>($"ConnectionStrings:{dbName}");
@@ -56,17 +56,17 @@ public class DatabaseConnectionManager
                 databases.Add(dbName);
             }
         }
-        
+
         return databases;
     }
 
     public string GetCurrentDatabase()
     {
         var defaultConnection = _configService.GetSetting<string>("ConnectionStrings:Default");
-        
+
         // Try to match with known connection strings
         var connectionStrings = new[] { "bwlive", "itkHaria", "imageData" };
-        
+
         foreach (var dbName in connectionStrings)
         {
             var connectionString = _configService.GetSetting<string>($"ConnectionStrings:{dbName}");
@@ -75,7 +75,7 @@ public class DatabaseConnectionManager
                 return dbName;
             }
         }
-        
+
         return "Default (Local)";
     }
 }
