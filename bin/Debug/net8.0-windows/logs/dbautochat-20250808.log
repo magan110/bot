@@ -1,0 +1,15 @@
+2025-08-08 12:21:47.371 +05:30 [FTL] Application terminated unexpectedly
+System.Exception: API key encryption/decryption test failed
+   at DbAutoChat.Win.Test.CoreInfrastructureTest.TestConfigurationService() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Test\CoreInfrastructureTest.cs:line 43
+   at DbAutoChat.Win.Test.CoreInfrastructureTest.RunTests() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Test\CoreInfrastructureTest.cs:line 18
+   at DbAutoChat.Win.Program.Main() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Program.cs:line 30
+2025-08-08 12:21:59.010 +05:30 [FTL] Application terminated unexpectedly
+System.Exception: API key encryption/decryption test failed
+   at DbAutoChat.Win.Test.CoreInfrastructureTest.TestConfigurationService() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Test\CoreInfrastructureTest.cs:line 43
+   at DbAutoChat.Win.Test.CoreInfrastructureTest.RunTests() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Test\CoreInfrastructureTest.cs:line 18
+   at DbAutoChat.Win.Program.Main() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Program.cs:line 30
+2025-08-08 12:22:05.766 +05:30 [FTL] Application terminated unexpectedly
+System.Exception: API key encryption/decryption test failed
+   at DbAutoChat.Win.Test.CoreInfrastructureTest.TestConfigurationService() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Test\CoreInfrastructureTest.cs:line 43
+   at DbAutoChat.Win.Test.CoreInfrastructureTest.RunTests() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Test\CoreInfrastructureTest.cs:line 18
+   at DbAutoChat.Win.Program.Main() in C:\Users\magan\OneDrive\Desktop\New folder (4)\bot\Program.cs:line 30
